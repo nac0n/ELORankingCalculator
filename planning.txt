@@ -1,0 +1,12 @@
+﻿input challonge link
+start
+get html
+run regex on html and get plain text with results
+run for-loop
+	run regex on plaintext and get player1:"" and player2:"" and results:"", put them as an JSONobject in listarray {}
+	[...]
+
+run for-loop
+	run ELO code on the [i] match
+
+present results by order in a list on UI and write to file
