@@ -1,0 +1,13 @@
+http://regexr.com/
+
+Pools:
+
+name":"([\w\s\d]*?)","portrait_url":null,"participant_id":\d*?},"player2":{"id":\d*?,"seed":\d*?,"display_name":"([\w\s\d]*?)","portrait_url":null,"participant_id":\d*?},"player1_prereq_identifier":null,"player2_prereq_identifier":null,"player1_is_prereq_match_loser":false,"player2_is_prereq_match_loser":false,"player1_placeholder_text":null,"player2_placeholder_text":null,"winner_id":\d*?,"loser_id":\d*?,"scores":(.*?),"
+
+Bracket:
+
+name":"([\w\s\d]*?)","portrait_url":null,"participant_id":null},"player2":{"id":\d*?,"seed":\d*?,"display_name":"([\w\s\d]*?)","portrait_url":null,"participant_id":null},"player1_prereq_identifier":.*?,"player2_prereq_identifier":.*?,"player1_is_prereq_match_loser":.*?,"player2_is_prereq_match_loser":.*?,"player1_placeholder_text":null,"player2_placeholder_text":null,"winner_id":\d*?,"loser_id":\d*?,"scores":(.*?),"
+
+Listing:
+
+$1 vs. $2 $3\n

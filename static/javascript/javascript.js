@@ -1,5 +1,9 @@
 $(document).ready(function() {
+	var fs = require('fs');
+	console.log("Loaded script, able to calculate ranking...");
 
-	
-	console.log("hej");
+	$('#calculatebuttonid').click(function() {
+		fs.readFile();
+	});
+
 });
