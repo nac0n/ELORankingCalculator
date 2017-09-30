@@ -4,7 +4,7 @@ body {
 	margin: auto;
     width: 75%;
     height:500px;
-    background-color: grey;
+    background-color: black;
 }
 
 h1 {
@@ -23,8 +23,8 @@ h2 {
 }
 
 #calculatebuttonid {
-	color: blue;
-	border: 3px solid blue;
+	color: black;
+	border: 3px solid gray;
     padding: 10px;
 }
 

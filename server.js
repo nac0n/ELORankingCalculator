@@ -16,11 +16,19 @@ app.get('/', function (req, res) {
   res.render('index.html');
 });
 	
+Object.size = function(obj) {
+	var size = 0, key;
+	for (key in obj) {
+	    if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+
 var playernr = 1;
 var playerList = {};
 //var matches = {};
 var id2;
-
 
 io.on('connection', function(socket){
 	console.log('a user connected');
@@ -39,7 +47,8 @@ io.on('connection', function(socket){
   		var ReadLinePromise = new Promise(function(resolve, reject) {
   			lineReader.eachLine(__dirname + '/static/ratings/CurrentRanking.txt','utf8', function (line, last) {
 				
-				var content = JSON.stringify(line);
+				//var content = JSON.stringify(line);
+				line = line.replace(/\uFEFF/g,'');
 
 				var arr = line.split(',');
 				playerList[arr[0]] = arr[1];
@@ -48,6 +57,7 @@ io.on('connection', function(socket){
 
 				if(last){
 					resolve();
+					//console.log(playerList)
 					return false;t
 					// or check if i's the last one
 				}
@@ -56,19 +66,75 @@ io.on('connection', function(socket){
 
   		ReadLinePromise.then(function(message) {
 
+  			var OrganizePlayersPromise;
+
   			var CalculateMatchesPromise  = new Promise(function(resolve, reject) {
+  				console.log("playerList", playerList)
+  				console.log("matches", Object.size(matches));
 
 	  			Object.entries(matches).forEach(
-
-
 	  				//CALCULATE RANKING HERE
 				    function([key, value])  {
-				    	console.log(value.player1);//, value)
+				    	console.log(value.player1, value.player2, value.ResultPlayer1, value.ResultPlayer2);
+				    	value.player1 = value.player1.replace(" ", "");
+				    	value.player2 = value.player2.replace(" ", "");
+				    	console.log(value.player1, value.player2);
+
+				    	var prevratingP1;
+				    	var prevratingP2;
+
+					    Object.keys(playerList).forEach(function(key) {
+					    	if(value.player1 == key) {
+					    		console.log(key);
+					    		prevratingP1 = playerList[key];
+
+					    	}
+					    	if(value.player2 == key) {
+					    		console.log(key)
+					    		prevratingP2 = playerList[key];;
+					    	}
+
+							//var value = obj[key];
+						});
+
+					    if(value.ResultPlayer1 > value.ResultPlayer2) {
+					    	var hasWonP1 = true;
+					    	var hasWonP2 = false;
+					    	var wasTie = false;
+					    }
+					    else if(value.ResultPlayer2 > value.ResultPlayer1) {
+					    	var hasWonP1 = false;
+					    	var hasWonP2 = true;
+					    	var wasTie = false;
+					    }
+					    else {
+					    	console.log("It's a tie: ", value.ResultPlayer1, value.ResultPlayer2);
+					    	var hasWonP1 = false;
+					    	var hasWonP2 = false;
+					    	var wasTie = true;
+					    }
+
+				    	//calculate ranking to variables using the algortithm, 
+				    	var finalRatingP1 = parseInt(prevratingP1) + (kFactor(parseInt(prevratingP1), 5) * (actualScoreMethod(hasWonP1, wasTie) - expectedScore(parseInt(prevratingP1), parseInt(prevratingP2))));
+			    		var finalRatingP2 = parseInt(prevratingP2) + (kFactor(parseInt(prevratingP2), 5) * (actualScoreMethod(hasWonP2, wasTie) - expectedScore(parseInt(prevratingP2), parseInt(prevratingP1))));
+
+				    	 console.log("NEW RATING", finalRatingP1, finalRatingP2)
+				    	 console.log("OLD RATING", prevratingP1, prevratingP2)
+
+			    		var hasWonP1 = false;
+				    	var hasWonP2 = false;
+				    	var wasTie = false;
+				    	//use variables to post to file.
+				    		//find player1name, replace it's ranking
+				    		//find player2name, replace it's ranking
+
 				    }
 				);
+
   			});
 
 			CalculateMatchesPromise.then(function(message) {
+				//Send it, present it
 
 			}, function (errorMessage) {
 			    console.log('Error, ', errorMessage);
@@ -83,11 +149,6 @@ io.on('connection', function(socket){
 var tournamentURL;
 var regex;
 var tournamentHTML = "";
-
-function GetMatches () {
-
-	
-};
 
 function transformedRating(ratingPrev) {
 	var transformedRating;
